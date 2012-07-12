@@ -10,21 +10,22 @@ class Client(object):
         self.connection = 'https://api.cheddarapp.com'
 
         self.lists = ListManager(client=self)
+        self.lists.tasks = TaskManager(client=self)
 
     def ping(self):
         r = requests.get('https://api.cheddarapp.com/')
         return r.status_code
 
     def get_authorization_url(self):
-        return 'http://api.cheddarapp.com/oauth/authorize?client_id=%s' % self.oauth_id
+        return '%s/oauth/authorize?client_id=%s' % (self.connection, self.oauth_id)
 
     def get_token(self, code):
         #Set up request
         headers = {'grant_type': 'authorization_code', 'code': code}
-        url = '%s/oauth/token' % self.client.connection
+        url = '%s/oauth/token' % self.connection
 
         #Make request to api
-        r = requests.get(url, auth=(self.client.oauth_id, self.client.oauth_secret), headers=headers)
+        r = requests.get(url, auth=(self.oauth_id, self.oauth_secret), headers=headers)
 
         #Set token
         self.token = r.body['access_token']
@@ -75,3 +76,34 @@ class List(object):
         list.title = json_string['title']
         list.archived_at = json_string['archived_at']
         return list
+
+
+class Task(object):
+    def __init__(self):
+        self.text = None
+
+    def __unicode__(self):
+        return self.text
+
+    def __str__(self):
+        return self.text
+
+    def __repr__(self):
+        return '<Task: %s>' % self.text
+
+    @staticmethod
+    def decode_from_json(json_string):
+        task = Task()
+        task.title = json_string['text']
+        return task
+
+
+class TaskManager(object):
+    def __init__(self, client):
+        self.client = client
+
+    def all(self):
+        pass
+
+    def find(self, id):
+        pass
