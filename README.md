@@ -42,9 +42,6 @@ tasks = cheddar.lists.get(id=42).tasks.all()
 # Update that list.
 foobar.update(title='Barfoo')
 
-# Destroy that list!
-foobar.archive()
-
 # Make a new list called "Barfoo".
 barfoo = cheddar.lists.create(title='Barfoo')
 

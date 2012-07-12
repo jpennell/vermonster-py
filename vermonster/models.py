@@ -150,12 +150,6 @@ class List(object):
         """
         pass
 
-    def archive(self):
-        """
-        Archive list
-        """
-        pass
-
     def create_task(self, text):
         """
         Create task
@@ -205,17 +199,6 @@ class Task(object):
         """
         pass
 
-    def reorder(self, task_ids):
-        """
-        Reorder tasks
-
-        Parameters:
-
-        task_ids:
-        - Ordered list of task ids
-        """
-        pass
-
     @staticmethod
     def decode_from_json(json_string):
         """
@@ -236,17 +219,6 @@ class ListTaskManager(object):
         """
         pass
 
-    def get(self, id):
-        """
-        Get single task
-
-        Parameters:
-
-        id:
-        - Id of task
-        """
-        pass
-
     def create(self, text):
         """
         Create task
@@ -255,6 +227,17 @@ class ListTaskManager(object):
 
         text:
         - Text for task
+        """
+        pass
+
+    def reorder(self, task_ids):
+        """
+        Reorder tasks
+
+        Parameters:
+
+        task_ids:
+        - Ordered list of task ids
         """
         pass
 
