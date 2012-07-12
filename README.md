@@ -37,13 +37,13 @@ foobar = cheddar.lists.get(id=42)
 
 # Get the tasks in that list.
 tasks = foobar.tasks.all()
-tasks = cheddar.lists.find(id=42).tasks.all()
+tasks = cheddar.lists.get(id=42).tasks.all()
 
 # Update that list.
 foobar.update(title='Barfoo)
 
 # Destroy that list!
-foobar.destroy()
+foobar.archive()
 
 # Make a new list called "Barfoo".
 barfoo = cheddar.lists.create(title='Barfoo')
@@ -54,7 +54,7 @@ cheddar.lists.reorder([42, 12, 23])
 
 ### Tasks
 
-``` ruby
+``` python
 # Get one task.
 task = cheddar.tasks.get(id=42)
 

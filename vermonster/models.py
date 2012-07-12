@@ -10,7 +10,7 @@ class Client(object):
         self.connection = 'https://api.cheddarapp.com'
 
         self.lists = ListManager(client=self)
-        self.lists.tasks = TaskManager(client=self)
+        self.tasks = AllTasksManager(client=self)
 
     def ping(self):
         r = requests.get('https://api.cheddarapp.com/')
@@ -47,19 +47,33 @@ class ListManager(object):
         r = requests.get(url, headers=headers)
 
         #Build lists
-        lists = map(List.decode_from_json, json.loads(r.text))
+        lists = []
+        for item in json.loads(r.text):
+            list = List.decode_from_json(item)
+            list.client = self
+            lists.append(list)
+
         if not include_archived:
             lists = filter(lambda l: not l.archived_at, lists)
+
         return lists
 
-    def find(self, id):
+    def get(self, id):
+        pass
+
+    def create(self, title):
+        pass
+
+    def reorder(self, list_ids):
         pass
 
 
 class List(object):
-    def __init__(self):
+    def __init__(self, client=None):
         self.title = None
         self.archived_at = None
+        self.client = client
+        self.tasks = TaskManager(client=self.client)
 
     def __unicode__(self):
         return self.title
@@ -69,6 +83,15 @@ class List(object):
 
     def __repr__(self):
         return '<List: %s>' % self.title
+
+    def update(self, title):
+        pass
+
+    def archive(self):
+        pass
+
+    def create_task(self):
+        pass
 
     @staticmethod
     def decode_from_json(json_string):
@@ -91,6 +114,18 @@ class Task(object):
     def __repr__(self):
         return '<Task: %s>' % self.text
 
+    def update(self, text):
+        pass
+
+    def reorder(self, task_ids):
+        pass
+
+    def archive_completed(self):
+        pass
+
+    def archive_all(self):
+        pass
+
     @staticmethod
     def decode_from_json(json_string):
         task = Task()
@@ -105,5 +140,16 @@ class TaskManager(object):
     def all(self):
         pass
 
-    def find(self, id):
+    def get(self, id):
+        pass
+
+    def create(self, text):
+        pass
+
+
+class AllTasksManager(object):
+    def __init__(self, client):
+        self.client = client
+
+    def get(self, id):
         pass
