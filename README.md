@@ -24,3 +24,29 @@ cheddar.get_token(code)
 # You are now authorized!
 cheddar.is_authorized()
 ```
+
+### Lists
+
+``` python
+# Get all of your lists.
+lists = cheddar.lists.all()
+
+# Get a list called "Foobar" with an ID of 42.
+foobar = cheddar.lists.find(id=42)
+
+# Get the tasks in that list.
+tasks = foobar.tasks.all()
+tasks = cheddar.lists.find(id=42).tasks.all()
+
+# Update that list.
+foobar.update(title='Barfoo)
+
+# Destroy that list!
+foobar.destroy()
+
+# Make a new list called "Barfoo".
+barfoo = cheddar.lists.create(title='Barfoo')
+
+# Reorder your lists.
+cheddar.lists.reorder([42, 12, 23])
+```
