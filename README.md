@@ -6,7 +6,7 @@ Inspired by [Vermonster (Ruby)](https://github.com/eturk/vermonster).
 # Objective
 
 ``` python
-cheddar = VermonsterClient(oauth_id='oauth-id', oauth_secret='oauth-secret')
+cheddar = vermonster.Client(oauth_id='oauth-id', oauth_secret='oauth-secret')
 ```
 
 ### Authentication
