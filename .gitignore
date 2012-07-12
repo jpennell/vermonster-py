@@ -25,3 +25,10 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+#Sublime Text 2
+*.sublime*
+
+#Project
+go.sh
+main.py
