@@ -15,7 +15,7 @@ class Client(object):
         r = requests.get('https://api.cheddarapp.com/')
         return r.status_code
 
-    def authorize(self):
+    def get_authorization_url(self):
         return 'http://api.cheddarapp.com/oauth/authorize?client_id=%s' % self.oauth_id
 
     def get_token(self, code):

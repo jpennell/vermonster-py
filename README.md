@@ -14,7 +14,7 @@ cheddar = vermonster.Client(oauth_id='oauth-id', oauth_secret='oauth-secret')
 
 ``` python
 # Get the URL for the user to authorize the application.
-url = cheddar.authorize()
+url = cheddar.get_authorization_url()
 
 # Do whatever to send the user to that URL...
 # It redirects back to whatever you sent as callback URL.
