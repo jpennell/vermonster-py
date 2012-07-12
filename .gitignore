@@ -28,3 +28,7 @@ pip-log.txt
 
 #Sublime Text 2
 *.sublime*
+
+#Project
+go.sh
+main.py
