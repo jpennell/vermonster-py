@@ -12,8 +12,18 @@ class Client(object):
         if not oauth_id:
             raise ValueError('Expected valid oauth_id')
 
+        if not isinstance(oauth_id, str):
+            raise ValueError('Expected valid oauth_id')
+
         if not oauth_secret:
             raise ValueError('Expected valid oauth_secret')
+
+        if not isinstance(oauth_secret, str):
+            raise ValueError('Expected valid oauth_secret')
+
+        if token is not None:
+            if not isinstance(token, str):
+                raise ValueError('Expected valid token')
 
         self.oauth_id = oauth_id
         self.oauth_secret = oauth_secret
@@ -62,7 +72,46 @@ class ListManager(object):
     List manager: Manages Cheddar lists from api
     """
     def __init__(self, client):
+
+        if not client:
+            raise ValueError('Expected valid client')
+
+        if not isinstance(client, Client):
+            raise ValueError('Expected valid client')
+
         self.client = client
+
+    def _get_authorization_headers(self):
+        headers = {'Authorization': 'Bearer %s' % self.client.token}
+        return headers
+
+    def _get_request_url_all(self):
+        url = '%s/v1/lists' % self.client.connection
+        return url
+
+    def _get_lists_from_json(self, json_list, include_archived):
+
+        if not isinstance(include_archived, bool):
+            raise ValueError('Expected valid include_archived')
+
+        if not json_list:
+            return []
+        else:
+            if not isinstance(json_list, list):
+                raise ValueError('Expected valid json_list')
+
+        #Build lists
+        lists = []
+        for item in json_list:
+            item = List.decode_from_json(item)
+            item.client = self.client
+            lists.append(item)
+
+        #Filter lists
+        if not include_archived:
+            lists = filter(lambda l: not l.archived_at, lists)
+
+        return lists
 
     def all(self, include_archived=False):
         """
@@ -74,24 +123,13 @@ class ListManager(object):
         - Set to True if you wish to return all lists, even if they are archived
         """
         #Set up request
-        headers = {'Authorization': 'Bearer %s' % self.client.token}
-        url = '%s/v1/lists' % self.client.connection
+        headers = self._get_authorization_headers()
+        url = self._get_request_url_all()
 
         #Make request to api
         r = requests.get(url, headers=headers)
-
-        #Build lists
-        lists = []
-        for item in json.loads(r.text):
-            list = List.decode_from_json(item)
-            list.client = self
-            lists.append(list)
-
-        #Filter lists
-        if not include_archived:
-            lists = filter(lambda l: not l.archived_at, lists)
-
-        return lists
+        json_string = json.loads(r.text)
+        return self._get_lists_from_json(json_string=json_string, include_archived=include_archived)
 
     def get(self, id):
         """
