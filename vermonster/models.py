@@ -8,6 +8,13 @@ class Client(object):
     - A consumer of the Cheddar API (http://cheddarapp.com)
     """
     def __init__(self, oauth_id, oauth_secret, token=None):
+
+        if not oauth_id:
+            raise ValueError('Expected valid oauth_id')
+
+        if not oauth_secret:
+            raise ValueError('Expected valid oauth_secret')
+
         self.oauth_id = oauth_id
         self.oauth_secret = oauth_secret
         self.token = token
