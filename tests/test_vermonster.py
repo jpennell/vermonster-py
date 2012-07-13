@@ -37,13 +37,17 @@ class VermonsterTestSuite(unittest.TestCase):
         self.assertEqual(client.connection, 'https://api.cheddarapp.com')
 
     def test_initialize_client_oauth_id_none(self):
-        pass
+        with self.assertRaises(ValueError):
+            vermonster.Client(None, oauth_secret='test-oauth-secret')
 
     def test_initialize_client_oauth_secret_none(self):
-        pass
+        with self.assertRaises(ValueError):
+            vermonster.Client(oauth_id='test-oauth-id', oauth_secret=None)
 
     def test_initialize_client_oauth_id_empty(self):
-        pass
+        with self.assertRaises(ValueError):
+            vermonster.Client('', oauth_secret='test-oauth-secret')
 
     def test_initialize_client_oauth_secret_empty(self):
-        pass
+        with self.assertRaises(ValueError):
+            vermonster.Client(oauth_id='test-oauth-id', oauth_secret='')
