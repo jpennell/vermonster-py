@@ -70,3 +70,14 @@ foobar.tasks.archive_completed()
 # Archive all items!
 foobar.tasks.archive_all()
 ```
+
+## Contributing
+
+Vermonster-py is under active development, and we would really appreciate you helping us out! Here's how.
+
+1. Fork this repository.
+2. Take a look [at the issues](https://github.com/jpennell/vermonster-py/issues). What needs to be done?
+3. Make a topic branch for what you want to do. Bonus points for referencing an issue (like `2-authentication`).
+4. Make your changes.
+5. Create a Pull Request.
+6. Profit!
