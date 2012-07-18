@@ -1,5 +1,9 @@
 import requests
 import json
+import urllib
+from utils import get_authorization_headers
+from utils import get_request_url_all
+from utils import get_request_url_get
 
 
 class Client(object):
@@ -28,7 +32,6 @@ class Client(object):
         self.oauth_id = oauth_id
         self.oauth_secret = oauth_secret
         self.token = token
-        self.connection = 'https://api.cheddarapp.com'
 
         self.lists = ListManager(client=self)
         self.tasks = AllTasksManager(client=self)
@@ -81,14 +84,6 @@ class ListManager(object):
 
         self.client = client
 
-    def _get_authorization_headers(self):
-        headers = {'Authorization': 'Bearer %s' % self.client.token}
-        return headers
-
-    def _get_request_url_all(self):
-        url = '%s/v1/lists' % self.client.connection
-        return url
-
     def _get_lists_from_json(self, json_list, include_archived):
 
         if not isinstance(include_archived, bool):
@@ -123,13 +118,13 @@ class ListManager(object):
         - Set to True if you wish to return all lists, even if they are archived
         """
         #Set up request
-        headers = self._get_authorization_headers()
-        url = self._get_request_url_all()
+        headers = get_authorization_headers(self.client.token)
+        url = get_request_url_all()
 
         #Make request to api
         r = requests.get(url, headers=headers)
-        json_string = json.loads(r.text)
-        return self._get_lists_from_json(json_string=json_string, include_archived=include_archived)
+        json_list = json.loads(r.text)
+        return self._get_lists_from_json(json_list=json_list, include_archived=include_archived)
 
     def get(self, id):
         """
@@ -140,7 +135,14 @@ class ListManager(object):
         id:
         - Id of the cheddar list, ie '42'
         """
-        pass
+        #Set up request
+        headers = get_authorization_headers(self.client.token)
+        url = get_request_url_get(id)
+
+        #Make request to api
+        r = requests.get(url, headers=headers)
+        json_list = json.loads(r.text)
+        return self._get_lists_from_json(json_list=[json_list], include_archived=True)[0]
 
     def create(self, title):
         """
@@ -151,7 +153,15 @@ class ListManager(object):
         title:
         - Title of the list to create
         """
-        pass
+        #Set up request
+        headers = get_authorization_headers(self.client.token)
+        url = get_request_url_all()
+        data = "list[title]=%s" % urllib.quote(title)
+
+        #Make request to api
+        r = requests.post(url, headers=headers, data=data)
+        json_list = json.loads(r.text)
+        return self._get_lists_from_json(json_list=[json_list], include_archived=True)[0]
 
     def reorder(self, list_ids):
         """
@@ -170,6 +180,7 @@ class List(object):
     List model
     """
     def __init__(self, client=None):
+        self.id = None
         self.title = None
         self.archived_at = None
         self.client = client
@@ -184,6 +195,30 @@ class List(object):
     def __repr__(self):
         return '<List: %s>' % self.title
 
+    def _get_lists_from_json(self, json_list, include_archived):
+
+        if not isinstance(include_archived, bool):
+            raise ValueError('Expected valid include_archived')
+
+        if not json_list:
+            return []
+        else:
+            if not isinstance(json_list, list):
+                raise ValueError('Expected valid json_list')
+
+        #Build lists
+        lists = []
+        for item in json_list:
+            item = List.decode_from_json(item)
+            item.client = self.client
+            lists.append(item)
+
+        #Filter lists
+        if not include_archived:
+            lists = filter(lambda l: not l.archived_at, lists)
+
+        return lists
+
     def update(self, title):
         """
         Update list
@@ -192,6 +227,28 @@ class List(object):
 
         title:
         - New title for the list
+        """
+        #Set up request
+        headers = get_authorization_headers(self.client.token)
+        url = get_request_url_get(id=self.id)
+        data = "list[title]=%s" % urllib.quote(title)
+
+        #Make request to api
+        r = requests.put(url, headers=headers, data=data)
+        json_list = json.loads(r.text)
+        return self._get_lists_from_json(json_list=[json_list], include_archived=True)[0]
+
+    def archive(self):
+        """
+        Archive list:
+        - ie. Update archived_at field with current datetime
+        """
+        pass
+
+    def unarchive(self):
+        """
+        Archive list:
+        - ie. Update archived_at field with null
         """
         pass
 
@@ -207,13 +264,14 @@ class List(object):
         pass
 
     @staticmethod
-    def decode_from_json(json_string):
+    def decode_from_json(json_list):
         """
         Decode list from JSON
         """
         list = List()
-        list.title = json_string['title']
-        list.archived_at = json_string['archived_at']
+        list.id = json_list['id']
+        list.title = json_list['title']
+        list.archived_at = json_list['archived_at']
         return list
 
 
@@ -245,12 +303,12 @@ class Task(object):
         pass
 
     @staticmethod
-    def decode_from_json(json_string):
+    def decode_from_json(json_list):
         """
         Decode task model from JSON
         """
         task = Task()
-        task.title = json_string['text']
+        task.title = json_list['text']
         return task
 
 

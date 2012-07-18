@@ -47,6 +47,12 @@ barfoo = cheddar.lists.create(title='Barfoo')
 
 # Reorder your lists.
 cheddar.lists.reorder([42, 12, 23])
+
+#Archive list
+foobar.archive()
+
+#Unarchive list
+foobar.unarchive()
 ```
 
 ### Tasks
