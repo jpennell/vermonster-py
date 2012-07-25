@@ -1,1 +1,1 @@
-from .models import Client, ListManager
+from .models import Client
