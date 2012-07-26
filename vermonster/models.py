@@ -71,4 +71,4 @@ class Client(object):
         """
         Is user authenticated?
         """
-        pass
+        return True if self.token else False
