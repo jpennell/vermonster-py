@@ -17,7 +17,7 @@ cheddar = vermonster.Client(oauth_id='oauth-id', oauth_secret='oauth-secret')
 ###Obtain authentication url
 
 ``` python
-url = cheddar.get_authorization_url()
+url = cheddar.get_authentication_url()
 ```
 
 ###Obtain an access token
@@ -29,7 +29,7 @@ cheddar.get_token(code)
 ###Determine if you have authenticated
 
 ``` python
-cheddar.is_authorized()
+cheddar.is_authentication()
 ```
 
 ##Lists
