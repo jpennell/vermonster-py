@@ -1,6 +1,8 @@
 import requests
 import json
 
+from managers import ListManager
+
 
 class Client(object):
     """
@@ -30,6 +32,8 @@ class Client(object):
         self.oauth_id = oauth_id
         self.oauth_secret = oauth_secret
         self.token = token
+
+        self.lists = ListManager()
 
     def get_authentication_url(self, redirect_uri=None, state=None):
         """
