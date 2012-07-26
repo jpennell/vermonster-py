@@ -4,21 +4,6 @@ Consume all of the [Cheddar (API)](https://cheddarapp.com/developer).
 
 **Want Ruby instead? Check out [vermonster](https://github.com/eturk/vermonster).**
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ##General
 
 ###Create a client instance
@@ -161,17 +146,6 @@ foo.tasks.archive_completed()
 ``` python
 user = cheddar.user
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 ## Contributing
 
