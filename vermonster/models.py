@@ -49,9 +49,11 @@ class Client(object):
 
         url = "https://api.cheddarapp.com/oauth/authorize?client_id=%s" % self.oauth_id
 
+        #Include optional redirect uri
         if redirect_uri:
             url = url + "&redirect_uri=%s" % redirect_uri
 
+        #Include optional state
         if state:
             url = url + "&state=%s" % state
 
@@ -65,7 +67,27 @@ class Client(object):
 
         code: access code received after user logs in at the authorization url
         """
-        pass
+
+        if not code or not isinstance(code, str):
+            raise ValueError('Expected valid code')
+
+        #Set up request
+        body = {'grant_type': 'authorization_code', 'code': code}
+        url = 'https://api.cheddarapp.com/oauth/token'
+
+        #Make request to api
+        response = requests.post(url, auth=(self.oauth_id, self.oauth_secret), data=body)
+
+        if not response.status_code == 200:
+            raise ValueError('Failed to receive valid response from cheddar')
+
+        #Set token
+        access_token = json.loads(response.text)['access_token']
+
+        if not access_token or not isinstance(access_token, unicode):
+            raise ValueError('Failed to receive valid access token')
+
+        self.token = access_token
 
     def is_authenticated(self):
         """
